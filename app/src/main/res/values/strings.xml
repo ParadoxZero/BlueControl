@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BlueControl</string>
+    <string name="action_settings">Settings</string>
+    <string name="Showlist">List of paired Bluetooth devices:</string>
+    <string name="Select">Select</string>
+    <string name="exit">Exit</string>
+</resources>

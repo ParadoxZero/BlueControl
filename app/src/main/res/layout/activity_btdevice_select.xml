@@ -15,10 +15,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btselect"
-        android:text="@string/Select"
+        android:text="@string/ShowDevices"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="89dp" />
+        android:layout_marginBottom="89dp"
+        android:onClick="populateList"
+        android:nestedScrollingEnabled="false" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -28,7 +30,7 @@
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/button" />
+        android:layout_above="@+id/btselect" />
 
     <Button
         android:layout_width="wrap_content"

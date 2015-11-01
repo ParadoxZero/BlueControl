@@ -4,7 +4,7 @@
 * GitHub UserName: ParadoxZero
 * Email: sidhin.thomas@gmail.com
 *
-* This program is free to use and edit and protected under Open GNU license agreement
+* This program is free to use and edit protected under Open GNU license agreement
 *
  */
 
@@ -33,6 +33,7 @@ import android.bluetooth.BluetoothDevice;
 
 public class BTdeviceSelect extends ActionBarActivity {
 
+    static final public String EXTRA_DEVICE_ADDRESS = "com.bluedeamons.BTdeviceSelected";
 
     private Button btselect;
     private ListView btList;
@@ -52,14 +53,13 @@ public class BTdeviceSelect extends ActionBarActivity {
             finish();
         }
         else{
-            Toast.makeText(getApplicationContext(),"Select the correct bluetooth device!",Toast.LENGTH_LONG).show();
             if (btadapter.isEnabled())
             {
                 pairedDevices = btadapter.getBondedDevices();
             }
             else{
                 //Ask to the user turn the bluetooth on
-                startActivityForResult( new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 0);
+                startActivityForResult( new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
             }
         }
     }
@@ -97,6 +97,22 @@ public class BTdeviceSelect extends ActionBarActivity {
         }
         ArrayAdapter badapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,list);
         btList.setAdapter(badapter);
-        btList.setOnItemClickListener(null);
+        btList.setOnItemClickListener(new myBtListListener());
     }
+
+    public void exit_click(View V){
+        finish();
+    }
+
+    private class myBtListListener implements AdapterView.OnItemClickListener {
+        public void onItemClick(AdapterView p,View v,int i,long id){
+            String device = ((TextView)v).getText().toString();
+            String deviceAddr = device.substring(device.length()-17);
+            //Toast.makeText(getApplicationContext(),deviceAddr,Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(BTdeviceSelect.this,Control.class);
+            intent.putExtra(EXTRA_DEVICE_ADDRESS,deviceAddr);
+            startActivity(intent);
+        }
+    }
+
 }

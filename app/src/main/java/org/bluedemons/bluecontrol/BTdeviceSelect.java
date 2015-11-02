@@ -12,6 +12,11 @@
 
 package org.bluedemons.bluecontrol;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -58,8 +63,9 @@ public class BTdeviceSelect extends ActionBarActivity {
                 pairedDevices = btadapter.getBondedDevices();
             }
             else{
-                //Ask to the user turn the bluetooth on
-                startActivityForResult( new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+                DialogFragment newFragment = new SwitchBtDialogue();
+                newFragment.show(getFragmentManager(), "noBT");
+                //startActivityForResult( new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
             }
         }
     }
@@ -85,24 +91,34 @@ public class BTdeviceSelect extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void populateList(View v){
-        ArrayList list = new ArrayList();
-        if(pairedDevices.isEmpty()){
-            Toast.makeText(getApplicationContext(),"No paired device available!",Toast.LENGTH_LONG).show();
+    public void populateList(View v) {
+        if (btadapter.isEnabled()) {
+            ArrayList list = new ArrayList();
+            if (pairedDevices.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "No paired device available!", Toast.LENGTH_LONG).show();
+            } else {
+                for (BluetoothDevice b : pairedDevices) {
+                    list.add(b.getName() + " : " + b.getAddress());
+                }
+            }
+            ArrayAdapter badapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+            btList.setAdapter(badapter);
+            btList.setOnItemClickListener(new myBtListListener());
         }
         else{
-            for(BluetoothDevice b : pairedDevices){
-                list.add(b.getName()+" : "+b.getAddress());
-            }
+            DialogFragment newFragment = new SwitchBtDialogue();
+            newFragment.show(getFragmentManager(), "noBT");
         }
-        ArrayAdapter badapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,list);
-        btList.setAdapter(badapter);
-        btList.setOnItemClickListener(new myBtListListener());
     }
 
+
     public void exit_click(View V){
-        finish();
+        DialogFragment d = new ExitClick();
+        d.show(getFragmentManager(),"exit");
     }
+
+
+    //============ On Click Liseners================================================
 
     private class myBtListListener implements AdapterView.OnItemClickListener {
         public void onItemClick(AdapterView p,View v,int i,long id){
@@ -114,5 +130,42 @@ public class BTdeviceSelect extends ActionBarActivity {
             startActivity(intent);
         }
     }
+    //==============================================================================
+
+
+
+    //========================Dialogue Class===========================================
+    public class SwitchBtDialogue extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.switchOnBT)
+                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+    public class ExitClick extends DialogFragment{
+
+        public Dialog onCreateDialog(Bundle savedInstanceState){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.confirmationExit)
+                    .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int id){
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialogue, int id){}
+                    });
+            return builder.create();
+        }
+    }
+    //=======================================================================================
 
 }

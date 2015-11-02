@@ -9,4 +9,8 @@
     <string name="title_activity_control">Control</string>
     <string name="control">Use the Buttons to control the devices!</string>
     <string name="led">LED ON/OFF</string>
+    <string name="switchOnBT">Please switch on bluetooth and restart the app!</string>
+    <string name="okay">Okay</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirmationExit">Are you sure you want to exit?</string>
 </resources>

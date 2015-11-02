@@ -1,4 +1,5 @@
 /*
+* Copyright 2015-2018 Sidhin S Thomas
 *
 * Author: SIDHIN S THOMAS
 * GitHub UserName: ParadoxZero
@@ -11,6 +12,9 @@
 
 package org.bluedemons.bluecontrol;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -20,11 +24,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 
 public class Control extends ActionBarActivity {
 
     private Button led ;
     private String btAddress;
+
+    final private UUID id = UUID.fromString("01001101-0000-1010-8000-00805F9B34FB");
+
+    private BluetoothAdapter Adapter = null;
+    private BluetoothDevice control = null;
+    private BluetoothSocket channel = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +46,8 @@ public class Control extends ActionBarActivity {
         led = (Button) findViewById(R.id.led);
         Intent Control = getIntent();
         btAddress = Control.getStringExtra(BTdeviceSelect.EXTRA_DEVICE_ADDRESS);
+        Adapter = BluetoothAdapter.getDefaultAdapter();
+        control =  Adapter.getRemoteDevice(btAddress);
     }
 
     @Override

@@ -13,4 +13,5 @@
     <string name="okay">Okay</string>
     <string name="cancel">Cancel</string>
     <string name="confirmationExit">Are you sure you want to exit?</string>
+    <string name="about_me">About Me</string>
 </resources>

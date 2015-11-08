@@ -12,10 +12,17 @@
 
 package org.bluedemons.bluecontrol;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.ParcelUuid;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -46,6 +53,7 @@ public class Control extends ActionBarActivity {
 
     private Boolean sendSuccess ;
     private Boolean readSuccess ;
+    private Boolean ledState = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +66,9 @@ public class Control extends ActionBarActivity {
         ParcelUuid[] uuid = btDevice.getUuids();
         id = UUID.fromString(uuid[0].toString());
         BtConnectThread connect = new BtConnectThread();
-        connect.run();
+        connect.start();
+        //ConnectBT connect = new ConnectBT();
+        //connect.execute();
     }
 
     @Override
@@ -83,11 +93,22 @@ public class Control extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void led_onclick(View v){
-        btTransmit.write("Hello\n".getBytes());
+    @Override
+    public void onStop(){
+        super.onStop();
+        showMsg("Stopping!");
+        btTransmit.isRunning=false;
+        if(btSocket != null){
+            try {
+                btSocket.close();
+            } catch (IOException e){}
+            btSocket = null;
+        }
+
     }
+
     private void showMsg(String s){
-        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT).show();
 
     }
     private void goBack(){
@@ -95,56 +116,96 @@ public class Control extends ActionBarActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
+    //============================ On Click Listeners ===================================
+    public void led_onclick(View v){
+        if(btSocket.isConnected() && btSocket!=null) {
+            if (ledState) {
+                ledState = false;
+                btTransmit.write("q".getBytes());
+            } else {
+                ledState = true;
+
+                btTransmit.write("w".getBytes());
+            }
+        }
+    }
+    public void me(View v){
+        DialogFragment d = new Me();
+        d.show(getFragmentManager(),"me");
+    }
+    //================================================================================
+
+    //========================Threads=================================================
     private class BtConnectThread extends Thread {
-        public BtConnectThread(){
-            try{
-                btSocket = btDevice.createRfcommSocketToServiceRecord(id);
+        public Boolean isConnected = false;
+        @Override
+        public void run(){
+
+
+            try {
+                btSocket = btDevice.createInsecureRfcommSocketToServiceRecord(id);
                 btTransmit = new BtTransmission();
                 btTransmit.inStream = btSocket.getInputStream();
                 btTransmit.outStream = btSocket.getOutputStream();
-                showMsg("Socket Created");
+                btTransmit.start();
 
-            }catch (IOException e){
-                showMsg("Failed to communicate with the device please try again!");
-                goBack();
-            }
-        }
-        public void run(){
-            adapter.cancelDiscovery();
-            try {
+                adapter.cancelDiscovery();
                 btSocket.connect();
-                showMsg("Connected!");
+                isConnected = true;
             }
-            catch (IOException e){
-                showMsg("Connection failed");
-                goBack();
+            catch (IOException e) {
+
             }
         }
+
     }
     private class BtTransmission extends Thread{
 
         private InputStream inStream;
         private OutputStream outStream;;
+        public Boolean isRunning = true ;
+        private byte[] write ;
+        public void run(){
+            /*while(isRunning){
+                try {
+                    outStream.write(write);
+                    sendSuccess = true;
+                }catch (IOException e){
+                    sendSuccess = false;
+                }
+            }*/
+        }
 
 
-        public void write(byte[] write){
-            try {
-                outStream.write(write);
-                sendSuccess = true;
-            }catch (IOException e){
-                showMsg("Sending failed");
-                sendSuccess = false;
-            }
+        public void write(byte[] w){
+                write = w;
         }
-        public int read(){
-            try{
-                return inStream.read();
-            }catch (IOException e){
-                showMsg("Read fail");
-                readSuccess = false;
-                return -989;
-            }
+        public void cancel() {
+                try {
+                    btSocket.close();
+                } catch (IOException e) { }
         }
+
     }
 
+    //==========================================================================
+
+    //=================================Dialogs==================================
+
+    public class Me extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.switchOnBT)
+                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+    //==========================================================================
 }

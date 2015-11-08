@@ -1,4 +1,5 @@
 /*
+* Copyright 2015-2018 Sidhin S Thomas
 *
 * Author: SIDHIN S THOMAS
 * GitHub UserName: ParadoxZero
@@ -16,6 +17,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.app.LauncherActivity;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -130,6 +132,11 @@ public class BTdeviceSelect extends ActionBarActivity {
             startActivity(intent);
         }
     }
+
+    public void me(View v){
+        DialogFragment d = new Me();
+        d.show(getFragmentManager(),"me");
+    }
     //==============================================================================
 
 
@@ -155,14 +162,31 @@ public class BTdeviceSelect extends ActionBarActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState){
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.confirmationExit)
-                    .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener(){
-                        public void onClick(DialogInterface dialog, int id){
+                    .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
                             finish();
                         }
                     })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                        public void onClick(DialogInterface dialogue, int id){}
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogue, int id) {
+                        }
                     });
+            return builder.create();
+        }
+    }
+
+    public class Me extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.switchOnBT)
+                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+            // Create the AlertDialog object and return it
             return builder.create();
         }
     }

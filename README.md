@@ -1,5 +1,5 @@
-<img src = "">
-# BlueControl
+<img src = "https://github.com/ParadoxZero/BlueControl/blob/master/app/src/main/res/mipmap-xxhdpi/ic_launcher.png">
+<b><h1>BlueControl</h1></b>
 
 
 This app is to use along with an arduino. The aim is to control the electrical appliances using this app. 

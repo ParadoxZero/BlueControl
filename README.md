@@ -8,3 +8,4 @@ It will connect to the arduino using bluetooth and communicate with it.
 The control of the appliance will be done by arduino.
 
 The minimum sdk required is 17.
+The app is made using android studio.

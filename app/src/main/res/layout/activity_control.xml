@@ -20,4 +20,15 @@
         android:layout_centerHorizontal="true"
         android:onClick="led_onclick" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/disconnect"
+        android:id="@+id/button3"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="33dp"
+        android:onClick="disconnect" />
+
 </RelativeLayout>

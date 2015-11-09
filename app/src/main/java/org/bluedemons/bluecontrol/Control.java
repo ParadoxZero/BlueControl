@@ -96,6 +96,7 @@ public class Control extends ActionBarActivity {
     @Override
     public void onStop(){
         super.onStop();
+        btTransmit.isRunning=false;
         showMsg("Stopping!");
         btTransmit.isRunning=false;
         if(btSocket != null){
@@ -112,6 +113,9 @@ public class Control extends ActionBarActivity {
 
     }
     private void goBack(){
+        try {
+            btSocket.close();
+        } catch (IOException e){}
         Intent intent = new Intent(Control.this,BTdeviceSelect.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -128,10 +132,16 @@ public class Control extends ActionBarActivity {
                 btTransmit.write("w".getBytes());
             }
         }
+        else {
+            showMsg("Not connected, please try again!");
+        }
     }
     public void me(View v){
         DialogFragment d = new Me();
         d.show(getFragmentManager(),"me");
+    }
+    public void disconnect(View v){
+        goBack();
     }
     //================================================================================
 
@@ -154,8 +164,9 @@ public class Control extends ActionBarActivity {
                 isConnected = true;
             }
             catch (IOException e) {
-
+                goBack();
             }
+            if(isConnected=true) return;
         }
 
     }
@@ -164,21 +175,24 @@ public class Control extends ActionBarActivity {
         private InputStream inStream;
         private OutputStream outStream;;
         public Boolean isRunning = true ;
-        private byte[] write ;
-        public void run(){
-            /*while(isRunning){
+        private byte[] Write ;
+        public void run() {
+            if (Write != null) {
                 try {
-                    outStream.write(write);
+                    outStream.write(Write);
                     sendSuccess = true;
-                }catch (IOException e){
+                    Write = null;
+                } catch (IOException e) {
                     sendSuccess = false;
                 }
-            }*/
+            }
+            if(isRunning=false) return;
+
         }
 
 
         public void write(byte[] w){
-                write = w;
+                Write = w;
         }
         public void cancel() {
                 try {

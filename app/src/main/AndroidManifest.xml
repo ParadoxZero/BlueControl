@@ -2,10 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.bluedemons.bluecontrol" >
 
+    <uses-sdk
+        android:maxSdkVersion="22"
+        android:minSdkVersion="17" />
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-sdk android:minSdkVersion="17"
-        android:maxSdkVersion="22"/>
+
+    <android:uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,7 +33,20 @@
         </activity>
         <activity
             android:name=".Control"
-            android:label="@string/title_activity_control" >
+            android:label="@string/title_activity_control"
+            android:parentActivityName=".BTdeviceSelect">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.bluedemons.bluecontrol.BTdeviceSelect" />
+        </activity>
+        <activity
+            android:name=".btScan"
+            android:label="@string/title_activity_bt_scan"
+            android:parentActivityName=".BTdeviceSelect"
+            android:theme="@style/Theme.AppCompat.Dialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.bluedemons.bluecontrol.BTdeviceSelect" />
         </activity>
     </application>
 

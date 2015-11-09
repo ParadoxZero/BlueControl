@@ -14,4 +14,10 @@
     <string name="cancel">Cancel</string>
     <string name="confirmationExit">Are you sure you want to exit?</string>
     <string name="about_me">About Me</string>
+    <string name="credits">App created by:\nSidhin S Thomas,\nRIT Kottayam\nContact: <a>sidhin.thoams@gmail.com</a></string>
+    <string name="ScanForDevices">Scan For devices</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="title_activity_bt_scan">btScan</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

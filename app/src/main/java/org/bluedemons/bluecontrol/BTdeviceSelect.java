@@ -21,6 +21,7 @@ import android.app.LauncherActivity;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.zip.Inflater;
+
 import android.widget.Toast;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
@@ -87,13 +90,16 @@ public class BTdeviceSelect extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.about_me) {
+            me();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-    public void populateList(View v) {
+    //=============X===================X===================X===================X+=============
+
+    public void populateList() {
         if (btadapter.isEnabled()) {
             ArrayList list = new ArrayList();
             if (pairedDevices.isEmpty()) {
@@ -114,12 +120,6 @@ public class BTdeviceSelect extends ActionBarActivity {
     }
 
 
-    public void exit_click(View V){
-        DialogFragment d = new ExitClick();
-        d.show(getFragmentManager(),"exit");
-    }
-
-
     //============ On Click Liseners================================================
 
     private class myBtListListener implements AdapterView.OnItemClickListener {
@@ -133,9 +133,21 @@ public class BTdeviceSelect extends ActionBarActivity {
         }
     }
 
-    public void me(View v){
+    public void me(){
         DialogFragment d = new Me();
         d.show(getFragmentManager(),"me");
+    }
+    public void pairedDevices(View v){
+        populateList();
+    }
+    public void scan(View v){
+        Intent i = new Intent(this,btScan.class);
+        startActivity(i);
+        populateList();
+    }
+    public void exit_click(View V){
+        DialogFragment d = new ExitClick();
+        d.show(getFragmentManager(), "exit");
     }
     //==============================================================================
 
@@ -174,18 +186,15 @@ public class BTdeviceSelect extends ActionBarActivity {
             return builder.create();
         }
     }
-
     public class Me extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(R.string.switchOnBT)
-                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            finish();
-                        }
-                    });
+            LayoutInflater i = getActivity().getLayoutInflater();
+            builder.setTitle(R.string.about_me);
+            builder.setMessage(R.string.credits);
+
             // Create the AlertDialog object and return it
             return builder.create();
         }
